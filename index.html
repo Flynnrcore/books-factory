@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>База книг</title>
+  <link rel="stylesheet" href="./style.css">
+  <script src="index.js"></script>
+</head>
+<body>
+  <header>
+    <button class="addBookModalBtn headerBtn">Добавить книгу</button>
+    <h1>База книг</h1>
+  </header>
+  <main class="container">
+    <!-- Модальное окно добавления новой книги -->
+    <section id="addBookForm" class="hide">
+      <button class="addBookModalBtn">x</button>
+      <h2>Добавить новую книгу</h2>
+      <form>
+        <label for="title">
+          Название
+        </label>
+        <input id="title" name="title" type="text" required>
+        <label for="autor">
+          Автор
+        </label>
+        <input id="autor" name="autor" type="text" required>
+        <label for="year">
+          Год издания
+        </label>
+        <input id="year" name="year" type="text" required>
+        <label for="genre">
+          Жанр
+        </label>
+        <input id="genre" name="genre" type="text" required>
+       <label for="rating_">
+          Рейтинг
+        </label>
+        <select id="rating_" name="rating_">
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+        <button class="addFormSubmitBtn">Добавить</button>
+      </form>
+    </section>
+      <!-- Секция функционала для сортировки книг -->
+    <section class="sorting">
+      <form class="sortingForm">
+        <label for="sortBy">Сортировка по </label>
+        <select id="sortBy" name="sortBy">
+          <option value="title" selected>
+            наименованию
+          </option>
+          <option value="autor">
+            автору
+          </option>
+          <option value="year">
+            году
+          </option>
+          <option value="genre">
+            жанру
+          </option>
+         <option value="rating_">
+            рейтингу
+          </option>
+        </select>
+        <label for="sortType">Тип</label>
+        <select name="sortType">
+          <option value="increase" selected>
+            по возрастанию
+          </option>
+          <option value="decrease" >
+            по убыванию
+          </option>
+        </select>
+        <button class="sortingSubmitBtn">Принять</button>
+      </form>
+    </section>
+    <!-- Секция рендеринга книг -->
+    <section>
+      <p class="booksHeaders"><b>№п/п |  название | автор | год издания  | рейтинг </b></p>
+      <ol class="bookList">
+      </ol>
+    </section>
+  </main>  
+</body>
+</html>
