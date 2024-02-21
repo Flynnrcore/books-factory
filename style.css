@@ -49,7 +49,8 @@ button:active {
   transform: scale(0.9);
 }
 
-#addBookForm {
+#addBookForm,
+#editBookSection {
   position: absolute;
   max-width: 300px;
   margin-left: auto;
@@ -63,12 +64,14 @@ button:active {
   border-radius: 10px;
 }
 
-#addBookForm .addBookModalBtn {
+#addBookForm .addBookModalBtn,
+#editBookSection .editBookModalBtn {
   float: right;
   margin: 5px 5px 0 0;
 }
 
-#addBookForm form {
+#addBookForm form,
+#editBookSection form {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -76,11 +79,13 @@ button:active {
   color: white;
 }
 
-#addBookForm h2 {
+#addBookForm h2,
+#editBookSection h2 {
   color: white;
 }
 
-#addBookForm input, select {
+#addBookForm input, select,
+#editBookSection input, select {
   min-width: 200px;
   max-width: 250px;
   height: 20px;
@@ -88,7 +93,8 @@ button:active {
   border-radius: 20px;
 }
 
-.addFormSubmitBtn {
+.addFormSubmitBtn,
+.editFormSubmitBtn {
   width: 100px;
   height: 40px;
   margin: 10px;
@@ -121,4 +127,11 @@ li {
   width: 1.5em;
   background-color: white;
   background-image: url('./images/basket.svg');
+}
+
+.editBtn {
+  height: 1.5em;
+  width: 1.5em;
+  background-color: white;
+  background-image: url('./images/pen.svg');
 }
