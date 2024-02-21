@@ -60,7 +60,6 @@ function loadState() {
   const savedState = localStorage.getItem('state');
   if (savedState) {
     const parsedState = JSON.parse(savedState);
-    console.log(parsedState);
     const booksFromLocalStorage = parsedState.map(bookData => new Book(bookData.title, bookData.autor, bookData.year, bookData.genre, bookData.rating_));
     return booksFromLocalStorage;
   }
@@ -74,13 +73,32 @@ function saveState(newState) {
 
 const state = { books: loadState() };
 
+function deleteList (listId) {
+  state.books = state.books.filter((_book, index) => index !== Number(listId));
+  saveState(state.books);
+
+  renderBookList();
+};
+
 // Функция рендеринга списка книг на странице
 const bookList = document.querySelector('.bookList');
 function renderBookList() {
   bookList.innerHTML = '';
-  state.books.forEach((bookItem) => {
+  state.books.forEach((bookItem, index) => {
     const liEl = document.createElement('li');
     liEl.textContent = bookItem.getAll();
+// Добавления кнопки удаления
+    const deleteButton = document.createElement('button');
+    deleteButton.classList.add('deleteBtn');
+    deleteButton.setAttribute('id', index);
+    deleteButton.setAttribute('value', 'delete');
+    liEl.append(deleteButton);
+
+    deleteButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    deleteList(e.target.id);
+   });
+
     bookList.append(liEl);
   });
 }
