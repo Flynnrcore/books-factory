@@ -22,7 +22,7 @@
     <section id="addBookForm" class="hide">
       <button class="addBookModalBtn">x</button>
       <h2>Добавить новую книгу</h2>
-      <form>
+      <form class="addBookFormEl">
         <label for="title">
           Название
         </label>
@@ -59,10 +59,10 @@
       </form>
     </section>
     <!-- Модальное окно редактирования информации о книге -->
-    <section id="editBookForm" class="hide">
+    <section id="editBookSection" class="hide">
       <button class="editBookModalBtn">x</button>
-      <h2>Добавить новую книгу</h2>
-      <form>
+      <h2>Редактировать информацию о книге</h2>
+      <form id="editForm">
         <label for="titleEdit">
           Название
         </label>
@@ -95,7 +95,7 @@
           <option value="9">9</option>
           <option value="10">10</option>
         </select>
-        <button class="addFormSubmitBtn">Редактировать</button>
+        <button class="editFormSubmitBtn">Редактировать</button>
       </form>
     </section>
       <!-- Секция функционала для сортировки книг -->
