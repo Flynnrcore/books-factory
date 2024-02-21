@@ -111,3 +111,10 @@ li {
   margin: 0;
   padding-left: 1vw;
 }
+
+.deleteBtn {
+  height: 1.5em;
+  width: 1.5em;
+  background-color: white;
+  background-image: url('./images/basket.svg');
+}
