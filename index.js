@@ -71,7 +71,10 @@ function saveState(newState) {
   localStorage.setItem('state', JSON.stringify(newState));
 }
 
-const state = { books: loadState() };
+const state = {
+  books: loadState(),
+  editBook: null,
+};
 
 function deleteList (listId) {
   state.books = state.books.filter((_book, index) => index !== Number(listId));
@@ -80,6 +83,36 @@ function deleteList (listId) {
   renderBookList();
 };
 
+//Функционал редактирования книги
+const editForm = document.querySelector('#editForm');
+const editSection = document.querySelector('#editBookSection');
+const editBookModalBtn = document.querySelector('.editBookModalBtn');
+
+editBookModalBtn.addEventListener('click', () => {
+  editSection.classList.add('hide');
+});
+
+editForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const newBook = new Book(...formData.values());
+  state.books[state.editBook] = newBook;
+  saveState(state.books);
+  editSection.classList.add('hide');
+  renderBookList();
+});
+
+function fillFormData (index) {
+  const currBook = state.books[index];
+  state.editBook = index;
+
+  editForm.titleEdit.value = currBook.title;
+  editForm.autorEdit.value = currBook.autor;
+  editForm.yearEdit.value = currBook.year;
+  editForm.genreEdit.value = currBook.genre;
+  editForm.rating_Edit.value = currBook.rating_;
+}
+
 // Функция рендеринга списка книг на странице
 const bookList = document.querySelector('.bookList');
 function renderBookList() {
@@ -87,7 +120,21 @@ function renderBookList() {
   state.books.forEach((bookItem, index) => {
     const liEl = document.createElement('li');
     liEl.textContent = bookItem.getAll();
-// Добавления кнопки удаления
+
+// Добавление кнопки редактирования
+    const editButton = document.createElement('button');
+    editButton.classList.add('editBtn');
+    editButton.setAttribute('id', index);
+    editButton.setAttribute('value', 'edit');
+    liEl.append(editButton);
+
+    editButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      fillFormData(index);
+      editSection.classList.remove('hide');
+    });
+
+// Добавление кнопки удаления
     const deleteButton = document.createElement('button');
     deleteButton.classList.add('deleteBtn');
     deleteButton.setAttribute('id', index);
@@ -108,7 +155,7 @@ renderBookList();
 // Функционал добавления новой книги
 const addBookModalBtn = document.querySelectorAll('.addBookModalBtn');
 const addBookModal = document.querySelector('#addBookForm');
-const addBookForm2 = document.querySelector('form');
+const addBookForm = document.querySelector('.addBookFormEl');
 
 addBookModalBtn.forEach((btn) => {
   btn.addEventListener('click', (e) => {
@@ -116,7 +163,7 @@ addBookModalBtn.forEach((btn) => {
   });
 }); 
 
-addBookForm2.addEventListener('submit', (e) => {
+addBookForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const formData = new FormData(e.target);
   const newBook = new Book(...formData.values());
