@@ -141,3 +141,17 @@ sortingForm.addEventListener('submit', (e) => {
   }
   renderBookList();
 });
+
+// Функционал кнопки экспорта данных в JSON
+const exportJSONBtn = document.querySelector('.exportJSONBtn');
+exportJSONBtn.addEventListener('click', () => {
+  const json = JSON.stringify(state.books);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+
+  const linkJSON = document.createElement('a');
+  linkJSON.href = url;
+  linkJSON.download = 'data.json';
+  linkJSON.click();
+  URL.revokeObjectURL(url);
+});
