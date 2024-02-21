@@ -142,6 +142,37 @@ sortingForm.addEventListener('submit', (e) => {
   renderBookList();
 });
 
+// Функционал кнопки импорта данных JSON
+const handleFileSelect = (event) => {
+  const file = event.target.files[0];
+
+  const readerFile = new FileReader();
+  readerFile.onload = (e) => {
+    try {
+      const data = JSON
+        .parse(e.target.result)
+        .map(bookData => new Book(bookData.title, bookData.autor, bookData.year, bookData.genre, bookData.rating_));
+      state.books = data;
+      saveState(state.books);
+      renderBookList();      
+    } catch (error) {
+      console.error('Ошибка обработки JSON', error);
+    }
+  };
+
+  readerFile.readAsText(file);
+};
+
+const fileInput = document.createElement('input');
+fileInput.type = 'file';
+fileInput.accept = '.json';
+fileInput.addEventListener('change', handleFileSelect);
+
+const importJSONBtn = document.querySelector('.importJSONBtn');
+importJSONBtn.addEventListener('click', () => {
+  fileInput.click();
+});
+
 // Функционал кнопки экспорта данных в JSON
 const exportJSONBtn = document.querySelector('.exportJSONBtn');
 exportJSONBtn.addEventListener('click', () => {
