@@ -11,6 +11,7 @@
     <!-- Секция с кнопками -->
     <section class="headerBtns">
       <button class="addBookModalBtn headerBtn">Добавить книгу</button>
+      <button class="importJSONBtn headerBtn">Импорт JSON</button>
       <button class="exportJSONBtn headerBtn">Экспорт JSON</button>
      </section>
     <h1>База книг</h1>
@@ -54,6 +55,46 @@
           <option value="10">10</option>
         </select>
         <button class="addFormSubmitBtn">Добавить</button>
+      </form>
+    </section>
+    <!-- Модальное окно редактирования информации о книге -->
+    <section id="editBookForm" class="hide">
+      <button class="editBookModalBtn">x</button>
+      <h2>Добавить новую книгу</h2>
+      <form>
+        <label for="titleEdit">
+          Название
+        </label>
+        <input id="titleEdit" name="title" type="text" required>
+        <label for="autor">
+          Автор
+        </label>
+        <input id="autorEdit" name="autor" type="text" required>
+        <label for="yearEdit">
+          Год издания
+        </label>
+        <input id="yearEdit" name="year" type="text" required>
+        <label for="genreEdit">
+          Жанр
+        </label>
+        <input id="genreEdit" name="genre" type="text" required>
+       <label for="rating_Edit">
+          Рейтинг
+        </label>
+        <select id="rating_Edit" name="rating_">
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+        <button class="addFormSubmitBtn">Редактировать</button>
       </form>
     </section>
       <!-- Секция функционала для сортировки книг -->
