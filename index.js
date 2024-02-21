@@ -26,12 +26,12 @@ class Book {
 }
 
 // Создание сущностей с помощью класса Book и массива с книгами
-const book1 = new Book('Грокаем алгоритмы', 'Адитья Бхаргава', '2017', 'учебная', '8');
-const book2 = new Book('Преступление и наказание', 'Федор Достоевский', '1866', 'классика', '10');
-const book3 = new Book('Приключения Тома Сойера', 'Марк Твен', '1875', 'детская', '7');
-const book4 = new Book('Рок соло на электрогитаре', 'Сергей Седых', '2001', 'учебная', '5');
-const book5 = new Book('Записки юного врача', 'Михаил Булгаков', '1926', 'классика', '7');
-const book6 = new Book('Гарри Поттер и философский камень', 'Джоан Роулинг', '1995', 'детская', '6');
+const book1 = new Book('Грокаем алгоритмы', 'Адитья Бхаргава', '2017', 'учебная литература', '8');
+const book2 = new Book('Преступление и наказание', 'Федор Достоевский', '1866', 'классическая литература', '10');
+const book3 = new Book('Приключения Тома Сойера', 'Марк Твен', '1875', 'детская литература', '7');
+const book4 = new Book('Рок соло на электрогитаре', 'Сергей Седых', '2001', 'учебная литература', '5');
+const book5 = new Book('Записки юного врача', 'Михаил Булгаков', '1926', 'классическая литература', '7');
+const book6 = new Book('Гарри Поттер и философский камень', 'Джоан Роулинг', '1995', 'детская литература', '6');
 
 const books = [book1, book2, book3, book4, book5, book6];
 
@@ -55,7 +55,25 @@ console.log(filterBooksByGenre(books, 'классика'));
 console.log(findBookByTitle(books, 'Приключения Тома Сойера'));
 
 // GUI интерфейс
-const state = { books };
+// Функция для загрузки состояния из localStorage
+function loadState() {
+  const savedState = localStorage.getItem('state');
+  if (savedState) {
+    const parsedState = JSON.parse(savedState);
+    console.log(parsedState);
+    const booksFromLocalStorage = parsedState.map(bookData => new Book(bookData.title, bookData.autor, bookData.year, bookData.genre, bookData.rating_));
+    return booksFromLocalStorage;
+  }
+    return books;
+}
+
+// Функция для сохранения состояния в localStorage
+function saveState(newState) {
+  localStorage.setItem('state', JSON.stringify(newState));
+}
+
+const state = { books: loadState() };
+
 // Функция рендеринга списка книг на странице
 const bookList = document.querySelector('.bookList');
 function renderBookList() {
@@ -85,6 +103,7 @@ addBookForm2.addEventListener('submit', (e) => {
   const formData = new FormData(e.target);
   const newBook = new Book(...formData.values());
   state.books = [...state.books, newBook];
+  saveState(state.books);
   addBookModal.classList.toggle('hide');
   renderBookList();
 });
