@@ -54,9 +54,10 @@ function findBookByTitle(booksArr, requiredTitle) {
 }
 
 // Вызов функций с передачей в качестве аргумента массива книг
-console.log(sortBooksByRating(books));
+/* console.log(sortBooksByRating(books));
 console.log(filterBooksByGenre(books, 'классика'));
 console.log(findBookByTitle(books, 'Приключения Тома Сойера'));
+*/
 
 // GUI интерфейс
 // Функция для загрузки состояния из localStorage

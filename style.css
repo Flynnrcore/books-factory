@@ -1,10 +1,31 @@
-.html {
+:root {
+  --primary-color: #f4a261;
+  --second-color: rgba(233,196,106,0.3);
+  --third-color: #e76f51;
+  --primary-gradient: linear-gradient(90deg, rgba(233,196,106,1) 20%, rgba(244,162,97,1) 60%, rgba(244,162,97,1) 90%);
+}
+
+html {
   width: 100%;
   height: 100vh;
+  font-family: "Roboto", sans-serif;
 }
 
 body {
+  display: flex;
+  flex-direction: column;
   margin: 0;
+  background: var(--second-color);
+}
+
+.container {
+  width: 1000px;
+  height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: center;
+  background-color: white;
 }
 
 .hide {
@@ -13,14 +34,14 @@ body {
 
 header {
   display: flex;
-  height: 60px;
+  height: 80px;
   margin: 0;
   justify-content: center;
   align-items: center;
   padding: auto;
   color: white;
-  background: #D4A39E;
-  border-bottom: 2px solid #bd8b86;
+  background: var(--primary-gradient);
+  border-bottom: 2px solid var(--primary-color);
 }
 
 .headerBtns {
@@ -32,13 +53,7 @@ header {
 .headerBtn {
   width: 110px;
   height: 40px;
-}
-
-button {
-  color: white;
-  background: #bd8b86;
-  border: none;
-  border-radius: 6px;
+  margin-left: 10px;
 }
 
 button:hover {
@@ -59,7 +74,7 @@ button:active {
   left: 0;
   right: 0;
   text-align: center;
-  background: #D4A39E;
+  background: var(--primary-color);
   border: 1px solid white;
   border-radius: 10px;
 }
@@ -90,6 +105,7 @@ button:active {
   max-width: 250px;
   height: 20px;
   margin: 5px;
+  padding-left: 15px;
   border-radius: 20px;
 }
 
@@ -99,7 +115,7 @@ button:active {
   height: 40px;
   margin: 10px;
   color: white;
-  background: #bd8b86;
+  background: var(--third-color);
   border: none;
   border-radius: 6px;
 }
@@ -109,17 +125,18 @@ li {
 }
 
 .sorting {
+  margin-top: 10px;
   padding: 10px;
 }
 
 .sortingForm select,
 .sortingSubmitBtn {
   height: 25px;
+  padding: 0 20px;
 }
 
 .booksHeaders {
-  margin: 0;
-  padding-left: 1vw;
+  text-align: center;
 }
 
 .deleteBtn {
@@ -132,6 +149,14 @@ li {
 .editBtn {
   height: 1.5em;
   width: 1.5em;
+  margin: 0 5px;
   background-color: white;
   background-image: url('./images/pen.svg');
+}
+
+button {
+  color: white;
+  background: var(--primary-color);
+  border: none;
+  border-radius: 12px;
 }
