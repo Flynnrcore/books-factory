@@ -268,8 +268,12 @@ select {
 .table li:last-child {
   border-bottom: none;
 }
-.secondary {
-  color: #637387;
+.secondary-color {
+  color: #576577;
+}
+
+.actionsBtns {
+  margin-right: 40px;
 }
 
 /* ===== Кнопки действий ===== */
@@ -313,6 +317,10 @@ select {
   .booksHeaders, .table li {
     padding: 8px 5px;
     font-size: 14px;
+  }
+
+  .actionsBtns {
+    margin-right: 0;
   }
 }
 

@@ -4,11 +4,11 @@ export function renderBookList(state, bookList, openModal, saveState, renderBook
     const li = document.createElement('li');
     li.innerHTML = `
       <span>${book.title}</span>
-      <span>${book.autor}</span>
-      <span>${book.year}</span>
-      <span>${book.genre}</span>
+      <span class="secondary-color">${book.autor}</span>
+      <span class="secondary-color">${book.year}</span>
+      <span class="secondary-color">${book.genre}</span>
       <span>${book.rating_}</span>
-      <span>
+      <span class="actionsBtns">
         <button class="editBtn" data-idx="${idx}" title="Редактировать"></button>
         <button class="deleteBtn" data-idx="${idx}" title="Удалить"></button>
       </span>
