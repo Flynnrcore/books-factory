@@ -1,240 +1,78 @@
-// Класс book позволяющий создавать сущности с помощью оператора new
-class Book {
-  constructor(title, autor, year, genre, rating_) {
-    this.title = title;
-    this.autor = autor;
-    this.year = year;
-    this.genre = genre;
-    this.rating_ = rating_;
-  }
-  
-  getAll() {
-    return `${this.title}, ${this.autor}, ${this.year}, ${this.genre}, ${this.rating_}`; 
-  }
-  
-  rating(newRating) {
-    if (newRating >= 0 && newRating <= 10) {
-      this.rating_ = newRating;
-    }else {
-      throw new Error('Рейтинг должен быть не меньше нуля и не больше десяти!');
-    }
-  }
-  
-  toString() {
-    return this.getAll;
-  }
-}
+import { Book } from './classes/Book.js';
+import { loadState, saveState } from './data/storage.js';
+import { renderBookList } from './components/bookList.js';
+import { openModal, closeModal } from './components/modal.js';
+import { setupImport, setupExport } from './utils/importExport.js';
+import { setupSorting } from './utils/sort.js';
+import { initialData } from './data/initialData.js';
 
-// Создание сущностей с помощью класса Book и массива с книгами
-const book1 = new Book('Грокаем алгоритмы', 'Адитья Бхаргава', '2017', 'учебная литература', '8');
-const book2 = new Book('Преступление и наказание', 'Федор Достоевский', '1866', 'классическая литература', '10');
-const book3 = new Book('Приключения Тома Сойера', 'Марк Твен', '1875', 'детская литература', '7');
-const book4 = new Book('Рок соло на электрогитаре', 'Сергей Седых', '2001', 'учебная литература', '5');
-const book5 = new Book('Записки юного врача', 'Михаил Булгаков', '1926', 'классическая литература', '7');
-const book6 = new Book('Гарри Поттер и философский камень', 'Джоан Роулинг', '1995', 'детская литература', '6');
-const book7 = new Book('Космос: твой и мой', 'Алия Григ', '2020', 'научная литература', '6');
-const book8 = new Book('Герой нашего времени', 'Михаил Лермонтов', '1839', 'классическая литература', '8');
-const book9 = new Book('Незнайка на лучне', 'Николай Носов', '1965', 'детская литература', '9');
-const book10 = new Book('Теория государства и права', 'Николай Мазутов', '2009', 'юридическая литература', '10');
-
-const books = [book1, book2, book3, book4, book5, book6, book7, book8, book9, book10];
-
-// Функции сортировки по рейтингу и поиска по названию книги, жанру
-function sortBooksByRating(booksArr) {
-  return booksArr.slice().sort((a, b) => Number(b.rating_) -Number(a.rating_));
-}
-
-function filterBooksByGenre(booksArr, requiredGenre) {
-  return booksArr.filter(({genre}) => requiredGenre === genre);
-}
-
-function findBookByTitle(booksArr, requiredTitle) {
-  const findResult = booksArr.find((bookItem) => bookItem.title === requiredTitle);
-  return findResult ? findResult : null;
-}
-
-// Вызов функций с передачей в качестве аргумента массива книг
-/* console.log(sortBooksByRating(books));
-console.log(filterBooksByGenre(books, 'классика'));
-console.log(findBookByTitle(books, 'Приключения Тома Сойера'));
-*/
-
-// GUI интерфейс
-// Функция для загрузки состояния из localStorage
-function loadState() {
-  const savedState = localStorage.getItem('state');
-  if (savedState) {
-    const parsedState = JSON.parse(savedState);
-    const booksFromLocalStorage = parsedState.map(bookData => new Book(bookData.title, bookData.autor, bookData.year, bookData.genre, bookData.rating_));
-    return booksFromLocalStorage;
-  }
-    return books;
-}
-
-// Функция для сохранения состояния в localStorage
-function saveState(newState) {
-  localStorage.setItem('state', JSON.stringify(newState));
-}
-
-const state = {
-  books: loadState(),
-  editBook: null,
+// -- Переменные состояния --
+let editIndex = { value: null };
+let state = {
+  books: loadState(initialData),
 };
 
-function deleteList (listId) {
-  state.books = state.books.filter((_book, index) => index !== Number(listId));
-  saveState(state.books);
-
-  renderBookList();
-};
-
-//Функционал редактирования книги
-const editForm = document.querySelector('#editForm');
-const editSection = document.querySelector('#editBookSection');
-const editBookModalBtn = document.querySelector('.editBookModalBtn');
-
-editBookModalBtn.addEventListener('click', () => {
-  editSection.classList.add('hide');
-});
-
-editForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const formData = new FormData(e.target);
-  const newBook = new Book(...formData.values());
-  state.books[state.editBook] = newBook;
-  saveState(state.books);
-  editSection.classList.add('hide');
-  renderBookList();
-});
-
-function fillFormData (index) {
-  const currBook = state.books[index];
-  state.editBook = index;
-
-  editForm.titleEdit.value = currBook.title;
-  editForm.autorEdit.value = currBook.autor;
-  editForm.yearEdit.value = currBook.year;
-  editForm.genreEdit.value = currBook.genre;
-  editForm.rating_Edit.value = currBook.rating_;
-}
-
-// Функция рендеринга списка книг на странице
+// -- DOM-элементы --
 const bookList = document.querySelector('.bookList');
-function renderBookList() {
-  bookList.innerHTML = '';
-  state.books.forEach((bookItem, index) => {
-    const liEl = document.createElement('li');
-    liEl.textContent = bookItem.getAll();
+const bookModal = document.getElementById('bookModal');
+const modalOverlay = document.getElementById('modalOverlay');
+const addBookModalBtn = document.querySelector('.addBookModalBtn');
+const importJSONBtn = document.querySelector('.importJSONBtn');
+const exportJSONBtn = document.querySelector('.exportJSONBtn');
+const sortingForm = document.querySelector('.sortingForm');
+const modalTitle = document.getElementById('modalTitle');
+const bookForm = document.getElementById('bookForm');
+const modalSubmitBtn = document.getElementById('modalSubmitBtn');
+const closeModalBtns = document.querySelectorAll('.closeModalBtn');
 
-// Добавление кнопки редактирования
-    const editButton = document.createElement('button');
-    editButton.classList.add('editBtn');
-    editButton.setAttribute('id', index);
-    editButton.setAttribute('value', 'edit');
-    liEl.append(editButton);
-
-    editButton.addEventListener('click', (e) => {
-      e.stopPropagation();
-      fillFormData(index);
-      editSection.classList.remove('hide');
-    });
-
-// Добавление кнопки удаления
-    const deleteButton = document.createElement('button');
-    deleteButton.classList.add('deleteBtn');
-    deleteButton.setAttribute('id', index);
-    deleteButton.setAttribute('value', 'delete');
-    liEl.append(deleteButton);
-
-    deleteButton.addEventListener('click', (e) => {
-    e.stopPropagation();
-    deleteList(e.target.id);
-   });
-
-    bookList.append(liEl);
-  });
+// -- Рендеринг списка книг --
+function rerender() {
+  renderBookList(state, bookList, (mode, idx) => {
+    if (mode === 'edit') editIndex.value = idx;
+    openModal(mode, state, editIndex, bookModal, modalOverlay, modalTitle, modalSubmitBtn, bookForm);
+  }, saveState, rerender);
 }
 
-renderBookList();
-
-// Функционал добавления новой книги
-const addBookModalBtn = document.querySelectorAll('.addBookModalBtn');
-const addBookModal = document.querySelector('#addBookForm');
-const addBookForm = document.querySelector('.addBookFormEl');
-
-addBookModalBtn.forEach((btn) => {
-  btn.addEventListener('click', (e) => {
-  addBookModal.classList.toggle('hide');
-  });
-}); 
-
-addBookForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const formData = new FormData(e.target);
-  const newBook = new Book(...formData.values());
-  state.books = [...state.books, newBook];
-  saveState(state.books);
-  addBookModal.classList.toggle('hide');
-  renderBookList();
+// -- Универсальное модальное окно --
+addBookModalBtn.addEventListener('click', () => {
+  openModal('add', state, editIndex, bookModal, modalOverlay, modalTitle, modalSubmitBtn, bookForm);
 });
 
-// Функционал сортировки списка книг
-const sortingForm = document.querySelector('.sortingForm');
+closeModalBtns.forEach(btn => btn.addEventListener('click', () => {
+  closeModal(bookModal, modalOverlay, editIndex);
+}));
 
-sortingForm.addEventListener('submit', (e) => {
+modalOverlay.addEventListener('click', () => {
+  closeModal(bookModal, modalOverlay, editIndex);
+});
+
+// -- Добавление/редактирование книги --
+bookForm.addEventListener('submit', e => {
   e.preventDefault();
-  const sortingFormData = new FormData(e.target);
-  const sortBy = sortingFormData.get('sortBy');
-  const sortType = sortingFormData.get('sortType');
-  if (sortType === 'increase') {
-    state.books = sortBy === 'year' || sortBy ==='rating_' ? state.books.slice().sort((a, b) => a[sortBy] - b[sortBy]) : state.books.slice().sort((a, b) => a[sortBy].localeCompare(b[sortBy]));
+  const formData = new FormData(bookForm);
+  const book = new Book(
+    formData.get('title'),
+    formData.get('autor'),
+    formData.get('year'),
+    formData.get('genre'),
+    formData.get('rating_')
+  );
+  if (editIndex.value === null) {
+    state.books.push(book);
   } else {
-    state.books = sortBy === 'year' || sortBy ==='rating_' ? state.books.slice().sort((a, b) => b[sortBy] - a[sortBy]) : state.books.slice().sort((a, b) => b[sortBy].localeCompare(a[sortBy]));
+    state.books[editIndex.value] = book;
   }
-  renderBookList();
+  saveState(state.books);
+  closeModal(bookModal, modalOverlay, editIndex);
+  rerender();
 });
 
-// Функционал кнопки импорта данных JSON
-const handleFileSelect = (event) => {
-  const file = event.target.files[0];
+// -- Сортировка --
+setupSorting(sortingForm, state, rerender);
 
-  const readerFile = new FileReader();
-  readerFile.onload = (e) => {
-    try {
-      const data = JSON
-        .parse(e.target.result)
-        .map(bookData => new Book(bookData.title, bookData.autor, bookData.year, bookData.genre, bookData.rating_));
-      state.books = data;
-      saveState(state.books);
-      renderBookList();      
-    } catch (error) {
-      console.error('Ошибка обработки JSON', error);
-    }
-  };
+// -- Импорт/экспорт --
+setupImport(importJSONBtn, state, saveState, rerender);
+setupExport(exportJSONBtn, state);
 
-  readerFile.readAsText(file);
-};
-
-const fileInput = document.createElement('input');
-fileInput.type = 'file';
-fileInput.accept = '.json';
-fileInput.addEventListener('change', handleFileSelect);
-
-const importJSONBtn = document.querySelector('.importJSONBtn');
-importJSONBtn.addEventListener('click', () => {
-  fileInput.click();
-});
-
-// Функционал кнопки экспорта данных в JSON
-const exportJSONBtn = document.querySelector('.exportJSONBtn');
-exportJSONBtn.addEventListener('click', () => {
-  const json = JSON.stringify(state.books);
-  const blob = new Blob([json], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-
-  const linkJSON = document.createElement('a');
-  linkJSON.href = url;
-  linkJSON.download = 'data.json';
-  linkJSON.click();
-  URL.revokeObjectURL(url);
-});
+// -- Инициализация --
+rerender();
