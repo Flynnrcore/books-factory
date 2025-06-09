@@ -1,50 +1,43 @@
 <!DOCTYPE html>
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>База книг</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
   <link rel="icon" href="./images/favicon.ico" type="image/x-icon">
 </head>
 <body>
+  <div id="modalOverlay" class="modal-overlay hide"></div>
   <header>
-    <!-- Секция с кнопками -->
+    <div class="logoGroup">
+      <img class="logo" src="./images/logo.webp">
+      <h1>БиблиоБаза</h1>
+    </div>
     <section class="headerBtns">
       <button class="addBookModalBtn headerBtn">Добавить книгу</button>
       <button class="importJSONBtn headerBtn">Импорт JSON</button>
-      <button class="exportJSONBtn headerBtn">Экспорт JSON</button>
-     </section>
-    <h1>База книг</h1>
+      <button class="exportJSONBtn exportBtn"><img style="width: 20px; height: 15px;" src="/images/export.svg" /></button>
+    </section>
   </header>
   <main class="container">
-    <!-- Модальное окно добавления новой книги -->
-    <section id="addBookForm" class="hide">
-      <button class="addBookModalBtn">x</button>
-      <h2>Добавить новую книгу</h2>
-      <form class="addBookFormEl">
-        <label for="title">
-          Название
-        </label>
+    <!-- Универсальное модальное окно для добавления и редактирования книги -->
+    <section id="bookModal" class="hide">
+      <button type="button" class="closeModalBtn">×</button>
+      <h2 id="modalTitle">Добавить новую книгу</h2>
+      <form id="bookForm">
+        <label for="title">Название</label>
         <input id="title" name="title" type="text" required>
-        <label for="autor">
-          Автор
-        </label>
+        <label for="autor">Автор</label>
         <input id="autor" name="autor" type="text" required>
-        <label for="year">
-          Год издания
-        </label>
-        <input id="year" name="year" type="text" required>
-        <label for="genre">
-          Жанр
-        </label>
+        <label for="year">Год издания</label>
+        <input id="year" name="year" type="number" required>
+        <label for="genre">Жанр</label>
         <input id="genre" name="genre" type="text" required>
-       <label for="rating_">
-          Рейтинг
-        </label>
+        <label for="rating_">Рейтинг</label>
         <select id="rating_" name="rating_">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -58,89 +51,44 @@
           <option value="9">9</option>
           <option value="10">10</option>
         </select>
-        <button class="addFormSubmitBtn">Добавить</button>
+        <div class="buttonGroup">
+          <button type="button" class="closeModalBtn">Отмена</button>
+          <button type="submit" id="modalSubmitBtn">Добавить</button>
+        </div>
       </form>
     </section>
-    <!-- Модальное окно редактирования информации о книге -->
-    <section id="editBookSection" class="hide">
-      <button class="editBookModalBtn">x</button>
-      <h2>Редактировать информацию о книге</h2>
-      <form id="editForm">
-        <label for="titleEdit">
-          Название
-        </label>
-        <input id="titleEdit" name="title" type="text" required>
-        <label for="autor">
-          Автор
-        </label>
-        <input id="autorEdit" name="autor" type="text" required>
-        <label for="yearEdit">
-          Год издания
-        </label>
-        <input id="yearEdit" name="year" type="text" required>
-        <label for="genreEdit">
-          Жанр
-        </label>
-        <input id="genreEdit" name="genre" type="text" required>
-       <label for="rating_Edit">
-          Рейтинг
-        </label>
-        <select id="rating_Edit" name="rating_">
-          <option value="0" selected>0</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="7">7</option>
-          <option value="8">8</option>
-          <option value="9">9</option>
-          <option value="10">10</option>
-        </select>
-        <button class="editFormSubmitBtn">Редактировать</button>
-      </form>
-    </section>
-      <!-- Секция функционала для сортировки книг -->
+    <!-- Секция функционала для сортировки книг -->
     <section class="sorting">
       <form class="sortingForm">
         <label for="sortBy">Сортировка по </label>
         <select id="sortBy" name="sortBy">
-          <option value="title" selected>
-            наименованию
-          </option>
-          <option value="autor">
-            автору
-          </option>
-          <option value="year">
-            году
-          </option>
-          <option value="genre">
-            жанру
-          </option>
-         <option value="rating_">
-            рейтингу
-          </option>
+          <option value="title" selected>наименованию</option>
+          <option value="autor">автору</option>
+          <option value="year">году</option>
+          <option value="genre">жанру</option>
+          <option value="rating_">рейтингу</option>
         </select>
         <label for="sortType">Тип</label>
-        <select name="sortType">
-          <option value="increase" selected>
-            по возрастанию
-          </option>
-          <option value="decrease" >
-            по убыванию
-          </option>
+        <select id="sortType" name="sortType">
+          <option value="increase" selected>по возрастанию</option>
+          <option value="decrease">по убыванию</option>
         </select>
         <button class="sortingSubmitBtn">Принять</button>
       </form>
     </section>
     <!-- Секция рендеринга книг -->
-    <section>
-      <p class="booksHeaders"><b>№п/п |  название | автор | год издания  | рейтинг </b></p>
-      <ol class="bookList">
-      </ol>
+    <section class="table">
+      <div class="booksHeaders">
+        <span>название</span>
+        <span>автор</span>
+        <span>год издания</span>
+        <span>жанр</span>
+        <span>рейтинг</span>
+        <span>действия</span>
+      </div>
+      <ol class="bookList"></ol>
     </section>
   </main>
-  <script src="index.js"></script>
+  <script type="module" src="index.js"></script>
 </body>
 </html>
